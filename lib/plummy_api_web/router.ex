@@ -8,5 +8,6 @@ defmodule PlummyApiWeb.Router do
   scope "/api", PlummyApiWeb do
     pipe_through :api
     get "/", BaseController, :index
+    post "/accounts/create", AccountController, :create
   end
 end
