@@ -4,6 +4,8 @@ defmodule PlummyApi.Accounts do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Repo
+  # alias ElixirSense.Providers.Suggestion.Reducers.Returns
   alias PlummyApi.Repo
 
   alias PlummyApi.Accounts.Account
@@ -36,6 +38,26 @@ defmodule PlummyApi.Accounts do
 
   """
   def get_account!(id), do: Repo.get!(Account, id)
+
+  @doc """
+  Gets a single account.any()
+
+  Returns `nil` if the Account does not exist.
+
+  ## Examples
+
+      iex> get_account_by_email("test@gmail.com")
+      %Account{}
+
+      iex> get_account_by_email("bad_email")
+      nil
+
+  """
+  def get_account_by_email(email) do
+    Account
+    |> where(email: ^email)
+    |> Repo.one()
+  end
 
   @doc """
   Creates a account.
