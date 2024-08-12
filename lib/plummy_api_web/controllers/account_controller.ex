@@ -1,9 +1,7 @@
 defmodule PlummyApiWeb.AccountController do
   use PlummyApiWeb, :controller
 
-  alias PlummyApiWeb.Auth.Guardian
-  alias PlummyApi.Users
-  alias Hex.API.User
+  alias PlummyApiWeb.{Auth.Guardian, Auth.ErrorResponse}
   alias PlummyApi.{Accounts, Accounts.Account, Users, Users.User}
 
   action_fallback PlummyApiWeb.FallbackController
@@ -20,6 +18,18 @@ defmodule PlummyApiWeb.AccountController do
       conn
       |> put_status(:created)
       |> render("account_token.json", %{account: account, token: token})
+    end
+  end
+
+  def sign_in(conn, %{"email" => email, "hash_password" => hash_password}) do
+    case Guardian.authenticate(email, hash_password) do
+      {:ok, account, token} ->
+        conn
+        |> put_status(:ok)
+        |> render("account_token.json", %{account: account, token: token})
+
+      {:error, :unauthorized} ->
+        raise ErrorResponse.Unauthorized, message: "Email or password is incorrect."
     end
   end
 
