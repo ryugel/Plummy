@@ -18,10 +18,19 @@ defmodule PlummyApiWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug PlummyApiWeb.Auth.Pipeline
+  end
+
   scope "/api", PlummyApiWeb do
     pipe_through :api
     get "/", BaseController, :index
     post "/accounts/create", AccountController, :create
     post "/accounts/sign_in", AccountController, :sign_in
+  end
+
+  scope "/api", PlummyApiWeb do
+    pipe_through [:api, :auth]
+    get "/accounts/by_id/:id", AccountController, :show
   end
 end
