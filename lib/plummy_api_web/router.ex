@@ -16,10 +16,12 @@ defmodule PlummyApiWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   pipeline :auth do
     plug PlummyApiWeb.Auth.Pipeline
+    plug PlummyApiWeb.Auth.SetAccount
   end
 
   scope "/api", PlummyApiWeb do
@@ -32,5 +34,7 @@ defmodule PlummyApiWeb.Router do
   scope "/api", PlummyApiWeb do
     pipe_through [:api, :auth]
     get "/accounts/by_id/:id", AccountController, :show
+    get "/accounts/sign_out", AccountController, :sign_out
+    post "/accounts/update", AccountController, :update
   end
 end
