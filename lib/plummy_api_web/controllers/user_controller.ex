@@ -4,7 +4,10 @@ defmodule PlummyApiWeb.UserController do
   alias PlummyApi.Users
   alias PlummyApi.Users.User
 
+  import PlummyApiWeb.Auth.AuthorizedPlug
   action_fallback PlummyApiWeb.FallbackController
+
+  plug :is_authorized when action in [:update, :delete]
 
   def index(conn, _params) do
     users = Users.list_users()
@@ -24,10 +27,8 @@ defmodule PlummyApiWeb.UserController do
     render(conn, :show, user: user)
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Users.get_user!(id)
-
-    with {:ok, %User{} = user} <- Users.update_user(user, user_params) do
+  def update(conn, %{"user" => user_params}) do
+    with {:ok, %User{} = user} <- Users.update_user(conn.assigns.account.user, user_params) do
       render(conn, :show, user: user)
     end
   end

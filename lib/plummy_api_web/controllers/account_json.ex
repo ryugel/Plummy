@@ -1,5 +1,6 @@
 defmodule PlummyApiWeb.AccountJSON do
   alias PlummyApi.Accounts.Account
+  alias PlummyApi.Users.User
 
   @doc """
   Renders a list of accounts.
@@ -28,6 +29,33 @@ defmodule PlummyApiWeb.AccountJSON do
       id: account.id,
       email: account.email,
       token: token
+    }
+  end
+
+  def render("user.json", %{user: user}) do
+    %{
+      id: user.id,
+      full_name: user.full_name,
+      gender: user.gender,
+      biography: user.biography
+    }
+  end
+
+  def render("full_account.json", %{account: account}) do
+    %{
+      id: account.id,
+      email: account.email,
+      user: render_user(account.user)
+    }
+  end
+
+  defp render_user(%User{} = user) do
+    %{
+      id: user.id,
+      full_name: user.full_name,
+      gender: user.gender,
+      biography: user.biography,
+      profile_picture: user.profile_picture
     }
   end
 end
