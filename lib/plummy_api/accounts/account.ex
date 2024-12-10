@@ -17,7 +17,9 @@ defmodule PlummyApi.Accounts.Account do
     account
     |> cast(attrs, [:email, :hash_password])
     |> validate_required([:email, :hash_password])
-    |> validate_format(:email, ~r/@/, message: "This field must be an email")
+    |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+      message: "This field must be an email"
+    )
     |> validate_length(:email, max: 155)
     |> unique_constraint(:email)
     |> put_password_hash()
